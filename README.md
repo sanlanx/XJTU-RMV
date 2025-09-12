@@ -6,6 +6,6 @@ the task01 need me install ubuntu successfully ,configure the C++ language envir
 
 here's my images of installing ubuntu and running the C++ code successfully:
 
-![installation of ubuntu](./images/Screenshot from 2025-09-12 14-58-06.png)
+![installation of ubuntu](./images/installaation_of_ubuntu.png)
 
-![success of running the code](./images/Screenshot from 2025-09-12 14-10-29.png)
+![success of running the code](./images/successful_running.png)
