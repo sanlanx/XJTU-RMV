@@ -22,9 +22,14 @@ int main() {
     Scalar lowerBlue = Scalar(95, 130, 230);   // 下限
     Scalar upperBlue = Scalar(110, 255, 255);  // 上限
 
+    Scalar lowerWhite = Scalar(0, 0, 200);     // 下限
+    Scalar upperWhite = Scalar(180, 30, 255);  // 上限
     // 4. 创建蓝色掩码
     Mat blueMask;
     inRange(hsvImage, lowerBlue, upperBlue, blueMask);
+    Mat whiteMask;
+    inRange(hsvImage, lowerWhite, upperWhite, whiteMask);
+    bitwise_or(blueMask, whiteMask, blueMask);
 
     // 5. 形态学操作（可选，用于去除噪声和填充空洞）
     Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
@@ -43,14 +48,19 @@ int main() {
     
     for (size_t i = 0; i < contours.size(); i++) {
         double area = contourArea(contours[i]);
-        if (area > 500 && area < 1000) {
+        if (area > 2500) {
             Rect rect = boundingRect(contours[i]);
             float aspectRatio = (float)rect.width / rect.height;
 
-            if (aspectRatio < 0.6) {
+            if (aspectRatio < 0.8 && aspectRatio > 0.6) {
                 validRects.push_back(rect);
                 // 可选：绘制原始小矩形（浅色）
-                // rectangle(result, rect, Scalar(0, 255, 0), 1);
+                rectangle(result, rect, Scalar(0, 255, 0), 1);
+
+                // 显示矩形面积
+                string areaText = "Area: " + to_string((int)area);
+                putText(result, areaText, Point(rect.x, rect.y - 5), 
+                        FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 255, 0), 1);
             }
         }
     }
@@ -84,7 +94,7 @@ int main() {
 
     // 9. 显示结果
     imshow("原始图像", image);
-    //imshow("蓝色掩码", blueMask);
+    imshow("蓝色掩码", blueMask);
     imshow("检测结果", result);
     imwrite("../resources/dealed_image_2.png", result);
 

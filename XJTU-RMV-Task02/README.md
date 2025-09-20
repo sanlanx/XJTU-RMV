@@ -11,6 +11,9 @@
 ![red_features](./resources/test_red_features.png)
 
 包括后面对装甲板区域的识别，也存在类似问题  
+装甲板的蓝灯灯光偏向于白色，所以HSV选择了白色和蓝色合并来实现识别  
+通过条件筛选可以获得三个矩形框（图中绿色矩形框），然后将其合并，成功识别装甲板
+
 在此附上HSV的基本颜色分量范围：https://cloud.tencent.com/developer/article/1199352
 
 ## 完成思路
