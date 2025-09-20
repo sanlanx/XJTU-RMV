@@ -24,6 +24,7 @@ int main() {
 
     Scalar lowerWhite = Scalar(0, 0, 200);     // 下限
     Scalar upperWhite = Scalar(180, 30, 255);  // 上限
+    
     // 4. 创建蓝色掩码
     Mat blueMask;
     inRange(hsvImage, lowerBlue, upperBlue, blueMask);
@@ -67,21 +68,39 @@ int main() {
 
     // 8. 合并所有矩形为一个大矩形
     if (!validRects.empty()) {
-        // 计算合并矩形的边界
-        int minX = validRects[0].x;
+        // 找到最左边和最右边的矩形
+        int leftmostX = validRects[0].x;
+        int rightmostX = validRects[0].x + validRects[0].width;
+        Rect leftmostRect = validRects[0];
+        Rect rightmostRect = validRects[0];
+        
         int minY = validRects[0].y;
-        int maxX = validRects[0].x + validRects[0].width;
         int maxY = validRects[0].y + validRects[0].height;
 
         for (size_t i = 1; i < validRects.size(); i++) {
-            minX = min(minX, validRects[i].x);
+            // 更新上下边界
             minY = min(minY, validRects[i].y);
-            maxX = max(maxX, validRects[i].x + validRects[i].width);
             maxY = max(maxY, validRects[i].y + validRects[i].height);
+            
+            // 找到最左边的矩形
+            if (validRects[i].x < leftmostX) {
+                leftmostX = validRects[i].x;
+                leftmostRect = validRects[i];
+            }
+            
+            // 找到最右边的矩形
+            if (validRects[i].x + validRects[i].width > rightmostX) {
+                rightmostX = validRects[i].x + validRects[i].width;
+                rightmostRect = validRects[i];
+            }
         }
 
+        // 计算左右边界为最左和最右矩形的中心
+        int leftBoundary = leftmostRect.x + leftmostRect.width / 2;
+        int rightBoundary = rightmostRect.x + rightmostRect.width / 2;
+        
         // 创建合并后的矩形
-        Rect mergedRect(minX, minY, maxX - minX, maxY - minY);
+        Rect mergedRect(leftBoundary, minY, rightBoundary - leftBoundary, maxY - minY);
         
         // 绘制合并后的大矩形（粗边框）
         rectangle(result, mergedRect, Scalar(0, 0, 255), 3);
@@ -90,13 +109,17 @@ int main() {
         string text = "Merged Rect: " + to_string(mergedRect.width) + "x" + to_string(mergedRect.height);
         putText(result, text, Point(mergedRect.x, mergedRect.y - 10), 
                 FONT_HERSHEY_SIMPLEX, 0.6, Scalar(0, 0, 255), 2);
+        
+        // 可选：标记左右边界中心点
+        circle(result, Point(leftBoundary, minY + (maxY - minY) / 2), 5, Scalar(255, 0, 0), -1);
+        circle(result, Point(rightBoundary, minY + (maxY - minY) / 2), 5, Scalar(255, 0, 0), -1);
     }
 
     // 9. 显示结果
     imshow("原始图像", image);
     imshow("蓝色掩码", blueMask);
     imshow("检测结果", result);
-    imwrite("../resources/dealed_image_2.png", result);
+    imwrite("../resources/dealed2_image_2.png", result);
 
     waitKey(0);
     return 0;
