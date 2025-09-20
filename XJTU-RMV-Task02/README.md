@@ -25,10 +25,10 @@
 用开运算和闭运算进行降噪和填充黑洞处理  
 钩勒轮廓  
 对矩形进行筛选，选出符合的矩形  
-将符合条件的矩形进行合并，得到最终结果：  
+将符合条件的矩形进行合并，得到最终结果（catchLight.cpp）：  
 ![dealed_light_caught](./resources/dealed_image_2.png)
 
-随后发现我生成的红色矩形框可能会超出装甲板的范围，所以进行一定的改进，得到结果如下：  
+随后发现我生成的红色矩形框可能会超出装甲板的范围，所以进行一定的改进，得到结果如下（catchLight2.cpp）：  
 ![dealed_light_caught_2](./resources/dealed2_image_2.png)
 
 ## 知识点记录

@@ -3,8 +3,10 @@ project(task2 VERSION 0.1.0 LANGUAGES C CXX)
 
 add_executable(task2_main src/main.cpp)
 add_executable(task2_catch src/catchLight.cpp)
+add_executable(task2_catch2 src/catchLight2.cpp)
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 target_link_libraries(task2_main ${OpenCV_LIBS})
 target_link_libraries(task2_catch ${OpenCV_LIBS})
+target_link_libraries(task2_catch2 ${OpenCV_LIBS})
