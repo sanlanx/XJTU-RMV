@@ -63,7 +63,7 @@ private:
 };
 
 // 小球检测函数
-bool detect_ball(const Mat& frame, Point2d& ball_center) {
+bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
     // 灰度转换与二值化处理
     Mat grayImage, binary;
     cvtColor(frame, grayImage, COLOR_BGR2GRAY);
@@ -92,6 +92,9 @@ bool detect_ball(const Mat& frame, Point2d& ball_center) {
     
     ball_center.x = img_x;
     ball_center.y = frame.rows - img_y;
+
+    draw_center.x = img_x;
+    draw_center.y = img_y;
 
     return true;
 }
@@ -128,12 +131,20 @@ int main(int argc, char** argv) {
             break;
         }
         
-        Point2d ball_center;
-        if (detect_ball(frame, ball_center)) {
+        Point2d ball_center, draw_center;
+        if (detect_ball(frame, ball_center, draw_center)) {
             double time = frame_count / fps;
             time_points.push_back(time);
             x_positions.push_back(ball_center.x);
             y_positions.push_back(ball_center.y);
+
+            x_positions.push_back(draw_center.x);
+            y_positions.push_back(draw_center.y);
+
+             // 可选：在图像上绘制检测到的小球
+            circle(frame, draw_center, 5, Scalar(0, 255, 0), 2);
+            putText(frame, "Ball", Point(draw_center.x + 10, draw_center.y), 
+                   FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
         }
         
         // 可选：显示处理后的帧
