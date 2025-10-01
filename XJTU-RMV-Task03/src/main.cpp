@@ -64,6 +64,7 @@ private:
 
 // 小球检测函数
 bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
+bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
     // 灰度转换与二值化处理
     Mat grayImage, binary;
     cvtColor(frame, grayImage, COLOR_BGR2GRAY);
@@ -92,6 +93,9 @@ bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
     
     ball_center.x = img_x;
     ball_center.y = frame.rows - img_y;
+
+    draw_center.x = img_x;
+    draw_center.y = img_y;
 
     draw_center.x = img_x;
     draw_center.y = img_y;
