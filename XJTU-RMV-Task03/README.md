@@ -70,6 +70,48 @@ Y方向平均相对误差: 1.56802%
 可以看到g的值为负数，是不合理的，了解原因，默认坐标建立为左上角，y轴向下为正  
 将坐标原点改到左下角就可以解决
 
+## 轮廓勾勒导致的BUG
+在我完成了参数求值后，我对视频进行逐帧勾勒，绘制小球的轮廓，但是此后出现了参数拟合错误问题
+
+我的错误代码：  
+```
+Point2d ball_center, draw_center;
+if (detect_ball(frame, ball_center, draw_center)) {
+    double time = frame_count / fps;
+    time_points.push_back(time);
+    x_positions.push_back(ball_center.x);
+    y_positions.push_back(ball_center.y);
+
+    x_positions.push_back(draw_center.x);
+    y_positions.push_back(draw_center.y);
+
+        // 可选：在图像上绘制检测到的小球
+    circle(frame, draw_center, 5, Scalar(0, 255, 0), 2);
+    putText(frame, "Ball", Point(draw_center.x + 10, draw_center.y), 
+            FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
+}
+```
+
+正确的代码：  
+```
+Point2d ball_center;
+Point2d draw_center;
+if (detect_ball(frame, ball_center, draw_center)) {
+    double time = frame_count / fps;
+    time_points.push_back(time);
+    x_positions.push_back(ball_center.x);
+    y_positions.push_back(ball_center.y);
+
+    // 可选：在图像上绘制检测到的小球
+    circle(frame, draw_center, 5, Scalar(0, 255, 0), 2);
+    putText(frame, "Ball", Point(draw_center.x + 10, draw_center.y), 
+            FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
+}
+```
+
+原因如下：  
+错误代码错把我需要勾勒的轮廓的坐标添加到了positions中，导致参数拟合出错  
+现已纠正
 
 # 完成思路
 `1、构造参数结构体`  
