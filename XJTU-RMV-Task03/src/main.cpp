@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
     }
     
     // 初始化参数（根据物理常识设置合理的初始值）
-    double params[6] = {x_positions[0], y_positions[0], 250.0, 350.0, 500.0, 0.07};
+    double params[6] = {x_positions[0], y_positions[0], 250.0, 350.0, 500.0, 0.066};
     
     // 创建Ceres问题
     ceres::Problem problem;
@@ -167,15 +167,15 @@ int main(int argc, char** argv) {
             new ceres::AutoDiffCostFunction<TrajectoryResidual, 2, 6>(
                 new TrajectoryResidual(time_points[i], x_positions[i], y_positions[i]));
         
-        problem.AddResidualBlock(cost_function, nullptr, params);
+        problem.AddResidualBlock(cost_function, NULL, params);
     }
     
     // 配置求解器选项
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::DENSE_QR;
     options.minimizer_progress_to_stdout = true;
-    options.max_num_iterations = 100;
-    options.function_tolerance = 1e-6;
+    // options.max_num_iterations = 100;
+    // options.function_tolerance = 1e-6;
     
     // 求解
     ceres::Solver::Summary summary;
