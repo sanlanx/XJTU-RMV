@@ -63,7 +63,7 @@ private:
 };
 
 // 小球检测函数
-bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
+bool detect_ball(const Mat& frame, Point2d& ball_center) {
     // 灰度转换与二值化处理
     Mat grayImage, binary;
     cvtColor(frame, grayImage, COLOR_BGR2GRAY);
@@ -93,11 +93,8 @@ bool detect_ball(const Mat& frame, Point2d& ball_center, Point2d& draw_center) {
     ball_center.x = img_x;
     ball_center.y = frame.rows - img_y;
 
-    draw_center.x = img_x;
-    draw_center.y = img_y;
-
-    draw_center.x = img_x;
-    draw_center.y = img_y;
+    //draw_center.x = img_x;
+    //draw_center.y = img_y;
 
     return true;
 }
@@ -135,24 +132,24 @@ int main(int argc, char** argv) {
         }
         
         Point2d ball_center;
-        Point2d draw_center;
-        if (detect_ball(frame, ball_center, draw_center)) {
+        //Point2d draw_center;
+        if (detect_ball(frame, ball_center)) {
             double time = frame_count / fps;
             time_points.push_back(time);
             x_positions.push_back(ball_center.x);
             y_positions.push_back(ball_center.y);
 
             // 可选：在图像上绘制检测到的小球
-            circle(frame, draw_center, 5, Scalar(0, 255, 0), 2);
-            putText(frame, "Ball", Point(draw_center.x + 10, draw_center.y), 
-                   FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
+            // circle(frame, draw_center, 5, Scalar(0, 255, 0), 2);
+            // putText(frame, "Ball", Point(draw_center.x + 10, draw_center.y), 
+            //        FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 255, 0), 1);
         }
         
         // 可选：显示处理后的帧
-        imshow("Ball Detection", frame);
-        if (waitKey(1) == 27) { // ESC键退出
-            break;
-        }
+        // imshow("Ball Detection", frame);
+        // if (waitKey(1) == 27) { // ESC键退出
+        //     break;
+        // }
         
         frame_count++;
     }
@@ -160,12 +157,12 @@ int main(int argc, char** argv) {
     capture.release();
     destroyAllWindows();
     
-    cout << "检测到 " << time_points.size() << " 个有效数据点" << endl;
+    // cout << "检测到 " << time_points.size() << " 个有效数据点" << endl;
     
-    if (time_points.size() < 10) {
-        cout << "数据点太少，无法进行拟合！" << endl;
-        return -1;
-    }
+    // if (time_points.size() < 10) {
+    //     cout << "数据点太少，无法进行拟合！" << endl;
+    //     return -1;
+    // }
     
     // 初始化参数（根据物理常识设置合理的初始值）
     double params[6] = {x_positions[0], y_positions[0], 250.0, 350.0, 500.0, 0.066};
@@ -204,36 +201,36 @@ int main(int argc, char** argv) {
     cout << "k = " << params[5] << " 1/s" << endl;
     
     // 计算平均误差
-    double total_x_error = 0.0;
-    double total_y_error = 0.0;
-    double total_relative_x_error = 0.0;
-    double total_relative_y_error = 0.0;
+    // double total_x_error = 0.0;
+    // double total_y_error = 0.0;
+    // double total_relative_x_error = 0.0;
+    // double total_relative_y_error = 0.0;
     
-    TrajectoryParams fitted_params = {params[0], params[1], params[2], params[3], params[4], params[5]};
+    // TrajectoryParams fitted_params = {params[0], params[1], params[2], params[3], params[4], params[5]};
     
-    for (size_t i = 0; i < time_points.size(); i++) {
-        double x_pred, y_pred;
-        trajectory_model(time_points[i], fitted_params, x_pred, y_pred);
+    // for (size_t i = 0; i < time_points.size(); i++) {
+    //     double x_pred, y_pred;
+    //     trajectory_model(time_points[i], fitted_params, x_pred, y_pred);
         
-        double x_error = abs(x_pred - x_positions[i]);
-        double y_error = abs(y_pred - y_positions[i]);
+    //     double x_error = abs(x_pred - x_positions[i]);
+    //     double y_error = abs(y_pred - y_positions[i]);
         
-        total_x_error += x_error;
-        total_y_error += y_error;
-        total_relative_x_error += (x_error / x_positions[i] * 100);
-        total_relative_y_error += (y_error / y_positions[i] * 100);
-    }
+    //     total_x_error += x_error;
+    //     total_y_error += y_error;
+    //     total_relative_x_error += (x_error / x_positions[i] * 100);
+    //     total_relative_y_error += (y_error / y_positions[i] * 100);
+    // }
     
-    double avg_x_error = total_x_error / time_points.size();
-    double avg_y_error = total_y_error / time_points.size();
-    double avg_relative_x_error = total_relative_x_error / time_points.size();
-    double avg_relative_y_error = total_relative_y_error / time_points.size();
+    // double avg_x_error = total_x_error / time_points.size();
+    // double avg_y_error = total_y_error / time_points.size();
+    // double avg_relative_x_error = total_relative_x_error / time_points.size();
+    // double avg_relative_y_error = total_relative_y_error / time_points.size();
     
-    cout << "\n平均误差统计：" << endl;
-    cout << "X方向平均绝对误差: " << avg_x_error << " px" << endl;
-    cout << "Y方向平均绝对误差: " << avg_y_error << " px" << endl;
-    cout << "X方向平均相对误差: " << avg_relative_x_error << "%" << endl;
-    cout << "Y方向平均相对误差: " << avg_relative_y_error << "%" << endl;
+    // cout << "\n平均误差统计：" << endl;
+    // cout << "X方向平均绝对误差: " << avg_x_error << " px" << endl;
+    // cout << "Y方向平均绝对误差: " << avg_y_error << " px" << endl;
+    // cout << "X方向平均相对误差: " << avg_relative_x_error << "%" << endl;
+    // cout << "Y方向平均相对误差: " << avg_relative_y_error << "%" << endl;
     
     return 0;
 }

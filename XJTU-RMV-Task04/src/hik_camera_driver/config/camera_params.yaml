@@ -1,0 +1,17 @@
+hik_camera:
+  ros__parameters:
+    device_index: 0           # USB设备索引号
+    camera_serial: ""         # 相机序列号（可选）
+    frame_rate: 30.0          # 采集帧率
+    width: 1280               # 图像宽度
+    height: 1024              # 图像高度
+    exposure_time: 1000.0    # 曝光时间(微秒)
+    gain: 0.0                 # 图像增益
+    pixel_format: "bayerrg8"      # 像素格式
+    auto_reconnect: true      # 自动重连
+    reconnect_interval: 5.0   # 重连间隔(秒)
+
+    # 优化参数
+    # use_zero_copy: true       # 启用零拷贝优化
+    # non_blocking_read: true   # 非阻塞读取模式
+    # message_pool_size: 10     # 消息池大小
